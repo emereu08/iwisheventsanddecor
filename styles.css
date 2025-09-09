@@ -5,6 +5,60 @@
     box-sizing: border-box;
 }
 
+/* Fallback para iconos si Font Awesome no carga */
+.fas, .fab {
+    font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", sans-serif;
+    font-weight: 900;
+    display: inline-block;
+}
+
+.fab {
+    font-weight: 400;
+}
+
+/* Asegurar que los iconos se muestren correctamente */
+.fas::before, .fab::before {
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Estilos para iconos de respaldo */
+.fallback-icon {
+    font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif !important;
+    font-weight: normal !important;
+    font-style: normal !important;
+    font-size: 1.2em !important;
+    line-height: 1 !important;
+    display: inline-block !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+/* Iconos SVG de respaldo para casos críticos */
+@supports not (font-family: "Font Awesome 6 Free") {
+    .fa-chair::before {
+        content: "";
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath fill='currentColor' d='M248 48V256h48V48c0-26.5-21.5-48-48-48s-48 21.5-48 48zM352 256V48c0-26.5-21.5-48-48-48s-48 21.5-48 48v208h96zm-192 0V48c0-26.5-21.5-48-48-48S64 21.5 64 48v208h96zM32 288c-17.7 0-32 14.3-32 32v32c0 17.7 14.3 32 32 32h16v96c0 17.7 14.3 32 32 32h32c17.7 0 32-14.3 32-32v-96h160v96c0 17.7 14.3 32 32 32h32c17.7 0 32-14.3 32-32v-96h16c17.7 0 32-14.3 32-32v-32c0-17.7-14.3-32-32-32H32z'/%3E%3C/svg%3E");
+        background-size: 1em 1em;
+        background-repeat: no-repeat;
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+    }
+    
+    .fa-truck::before {
+        content: "";
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 512'%3E%3Cpath fill='currentColor' d='M48 0C21.5 0 0 21.5 0 48V368c0 26.5 21.5 48 48 48H64c0 53 43 96 96 96s96-43 96-96H384c0 53 43 96 96 96s96-43 96-96h32c17.7 0 32-14.3 32-32s-14.3-32-32-32V288 256 237.3c0-17-6.7-33.3-18.7-45.3L512 114.7c-12-12-28.3-18.7-45.3-18.7H416V48c0-26.5-21.5-48-48-48H48zM416 160h50.7L544 237.3V256H416V160zM112 416a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm368-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z'/%3E%3C/svg%3E");
+        background-size: 1em 1em;
+        background-repeat: no-repeat;
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+    }
+}
+
 :root {
     --primary-color: #d4af37;
     --primary-dark: #b8941f;
@@ -541,6 +595,7 @@ body {
     flex: 0 0 320px;
     min-width: 320px;
     cursor: pointer;
+    will-change: transform;
 }
 
 .product-card:hover {
@@ -555,6 +610,7 @@ body {
     background: #f8f9fa;
     transition: var(--transition);
     border-radius: 8px 8px 0 0;
+    will-change: transform;
 }
 
 .product-card:hover .product-image {
@@ -691,6 +747,7 @@ body {
 
 .form-group {
     margin-bottom: 1.5rem;
+    position: relative;
 }
 
 .form-group input,
@@ -711,6 +768,174 @@ body {
     outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+/* Form validation states mejorados - Solo mostrar después de interacción */
+.form-group input.field-touched:invalid:not(:focus),
+.form-group select.field-touched:invalid:not(:focus),
+.form-group textarea.field-touched:invalid:not(:focus) {
+    border-color: #dc3545;
+}
+
+.form-group input.field-touched:valid:not(:focus):not(:placeholder-shown),
+.form-group select.field-touched:valid:not(:focus),
+.form-group textarea.field-touched:valid:not(:focus):not(:placeholder-shown) {
+    border-color: #28a745;
+}
+
+/* Estados iniciales de campos - sin validación visible */
+.form-group select:not(.field-touched),
+.form-group input:not(.field-touched),
+.form-group textarea:not(.field-touched) {
+    border-color: #e0e0e0;
+    background-image: none !important;
+}
+
+/* Override del estado invalid por defecto en select */
+.form-group select:not(.field-touched):invalid {
+    border-color: #e0e0e0 !important;
+    background-image: none !important;
+    box-shadow: none !important;
+}
+
+/* Estados dinámicos de validación - Solo después de interacción */
+.form-group input.field-valid,
+.form-group select.field-valid,
+.form-group textarea.field-valid {
+    border-color: #28a745 !important;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2328a745' viewBox='0 0 16 16'%3E%3Cpath d='M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px 16px;
+    padding-right: 40px;
+}
+
+.form-group input.field-invalid,
+.form-group select.field-invalid,
+.form-group textarea.field-invalid {
+    border-color: #dc3545 !important;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23dc3545' viewBox='0 0 16 16'%3E%3Cpath d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px 16px;
+    padding-right: 40px;
+}
+
+/* Select específico - evitar mostrar iconos hasta validación */
+.form-group select:not(.field-touched) {
+    background-image: none !important;
+    padding-right: 15px !important;
+}
+
+.form-group textarea.field-valid,
+.form-group textarea.field-invalid {
+    background-position: right 12px top 12px;
+}
+
+/* Animación suave para transiciones */
+.form-group input,
+.form-group select,
+.form-group textarea {
+    transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Estado de campo vacío requerido */
+.form-group input.field-empty:not(:focus),
+.form-group select.field-empty:not(:focus),
+.form-group textarea.field-empty:not(:focus) {
+    border-color: #ffc107;
+    background-color: #fff8e1;
+}
+
+/* Error messages mejorados */
+.error-message {
+    display: block;
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    min-height: 1.2rem;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.error-message:not(:empty) {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Success message para validación */
+.success-message {
+    display: block;
+    color: #28a745;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    min-height: 1.2rem;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.success-message:not(:empty) {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Honeypot - oculto para usuarios, visible para bots */
+.honeypot {
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Form button security and states */
+.btn[type="submit"]:disabled,
+.btn.btn-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+    background: #6c757d !important;
+}
+
+.btn[type="submit"] {
+    transition: all 0.3s ease;
+}
+
+.btn[type="submit"]:not(:disabled):not(.btn-disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+/* Textarea info container */
+.textarea-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 0.25rem;
+}
+
+/* Character counter */
+.char-counter {
+    font-size: 0.75rem;
+    color: #6c757d;
+    font-weight: 500;
+    white-space: nowrap;
+    margin-left: 1rem;
+}
+
+.char-counter.warning {
+    color: #ffc107;
+}
+
+.char-counter.danger {
+    color: #dc3545;
 }
 
 .form-group textarea {

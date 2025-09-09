@@ -1,4 +1,4 @@
-# EventRent - Landing Page Multiidioma
+# Iwisheventanddecor - Landing Page Multiidioma
 
 Una landing page moderna y responsive para servicios de alquiler de menaje y productos para eventos, disponible en español e inglés.
 
@@ -185,4 +185,4 @@ Para modificaciones o consultas sobre el código, revisa:
 
 ---
 
-**Creado con ❤️ para EventRent - I wish events and decor**
+**Creado con ❤️ para Iwisheventanddecor - I wish events and decor**

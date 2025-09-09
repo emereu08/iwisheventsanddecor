@@ -1,0 +1,54 @@
+# Configuración de Seguridad Adicional para Iwisheventanddecor
+
+## Protección contra ataques comunes
+
+# Bloquear archivos sensibles
+<FilesMatch "^(\.htaccess|\.htpasswd|wp-config\.php|readme\.html|license\.txt)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Bloquear directorios de desarrollo
+<DirectoryMatch "/(\.git|\.svn|node_modules|\.vscode)/">
+    Order Allow,Deny
+    Deny from all
+</DirectoryMatch>
+
+# Prevenir ejecución de PHP en directorio de uploads
+<Directory "img/">
+    <FilesMatch "\.php$">
+        Order Allow,Deny
+        Deny from all
+    </FilesMatch>
+</Directory>
+
+# Limitar tamaño de upload (si aplica)
+LimitRequestBody 10485760  # 10MB
+
+# Prevenir hotlinking de imágenes
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTP_REFERER} !^$
+    RewriteCond %{HTTP_REFERER} !^https://(www\.)?iwisheventanddecor\.com [NC]
+    RewriteRule \.(jpg|jpeg|png|gif|svg)$ - [F,L]
+</IfModule>
+
+# Bloquear user agents maliciosos
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTP_USER_AGENT} (nikto|sqlmap|fimap|nessus|whatweb|rips) [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} (<|>|'|%0A|%0D|%27|%3C|%3E|%00) [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} (;|<|>|'|"|\)|\(|%0A|%0D|%22|%27|%28|%3C|%3E|%00).*(libwww-perl|wget|python|nikto|curl|scan|java|winhttp|clshttp|loader) [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} (.*)(<?.*>).* [NC]
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# Rate limiting básico (requiere mod_evasive)
+<IfModule mod_evasive.c>
+    DOSHashTableSize     2048
+    DOSPageCount         2
+    DOSPageInterval      1
+    DOSSiteCount         50
+    DOSSiteInterval      1
+    DOSBlockingPeriod    10
+</IfModule>

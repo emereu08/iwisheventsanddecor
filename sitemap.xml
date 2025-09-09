@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <url>
+        <loc>https://iwisheventanddecor.com/</loc>
+        <lastmod>2025-09-09</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+        <xhtml:link rel="alternate" hreflang="en" href="https://iwisheventanddecor.com/index-en.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://iwisheventanddecor.com/"/>
+    </url>
+    <url>
+        <loc>https://iwisheventanddecor.com/index-en.html</loc>
+        <lastmod>2025-09-09</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+        <xhtml:link rel="alternate" hreflang="es" href="https://iwisheventanddecor.com/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://iwisheventanddecor.com/index-en.html"/>
+    </url>
+</urlset>

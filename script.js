@@ -1,5 +1,8 @@
 // DOM Content Loaded
 document.addEventListener('DOMContentLoaded', function() {
+    // Verificar y cargar iconos
+    checkFontAwesome();
+    
     // Initialize all functionality
     initializeNavigation();
     initializeProductCarousel();
@@ -8,7 +11,88 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeScrollEffects();
     initializeAnimations();
     initializeLanguageSwitcher();
+    initializePerformanceOptimizations();
 });
+
+// Verificar si Font Awesome se cargó correctamente
+function checkFontAwesome() {
+    // Crear un elemento de prueba
+    const testIcon = document.createElement('i');
+    testIcon.className = 'fas fa-chair';
+    testIcon.style.position = 'absolute';
+    testIcon.style.visibility = 'hidden';
+    document.body.appendChild(testIcon);
+    
+    // Verificar después de 1 segundo si el icono se renderizó
+    setTimeout(() => {
+        const computedStyle = window.getComputedStyle(testIcon, '::before');
+        const content = computedStyle.getPropertyValue('content');
+        
+        // Si Font Awesome no se cargó, aplicar fallback
+        if (!content || content === 'none' || content === '""') {
+            console.warn('Font Awesome no se cargó correctamente, aplicando iconos de respaldo');
+            applyIconFallback();
+        }
+        
+        document.body.removeChild(testIcon);
+    }, 1000);
+}
+
+// Aplicar iconos de respaldo
+function applyIconFallback() {
+    const iconMap = {
+        'fa-chair': '🪑',
+        'fa-truck': '🚚', 
+        'fa-headset': '🎧',
+        'fa-phone': '📞',
+        'fa-envelope': '✉️',
+        'fa-map-marker-alt': '📍',
+        'fa-clock': '🕐',
+        'fa-chevron-left': '‹',
+        'fa-chevron-right': '›',
+        'fa-instagram': '📷',
+        'fa-facebook-f': 'f',
+        'fa-whatsapp': '💬'
+    };
+    
+    Object.keys(iconMap).forEach(iconClass => {
+        const icons = document.querySelectorAll(`.${iconClass}`);
+        icons.forEach(icon => {
+            icon.innerHTML = iconMap[iconClass];
+            icon.style.fontFamily = 'Arial, sans-serif';
+            icon.style.fontSize = '1em';
+            icon.classList.add('fallback-icon');
+        });
+    });
+}
+
+// Performance optimizations
+function initializePerformanceOptimizations() {
+    // Debounced scroll handler
+    let scrollTimeout;
+    const handleScroll = () => {
+        if (scrollTimeout) {
+            cancelAnimationFrame(scrollTimeout);
+        }
+        scrollTimeout = requestAnimationFrame(() => {
+            // Scroll logic here if needed
+        });
+    };
+    
+    // Throttled resize handler
+    let resizeTimeout;
+    const handleResize = () => {
+        if (resizeTimeout) {
+            clearTimeout(resizeTimeout);
+        }
+        resizeTimeout = setTimeout(() => {
+            // Resize logic here if needed
+        }, 250);
+    };
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleResize, { passive: true });
+}
 
 // Language switcher functionality
 function initializeLanguageSwitcher() {
@@ -360,43 +444,341 @@ function initializeContactForm() {
     const form = document.getElementById('contactForm');
     
     if (form) {
+        // Generate CSRF token
+        generateCSRFToken();
+        
+        // Initialize character counter for textarea
+        initializeCharacterCounter();
+        
+        // Real-time validation mejorada
+        const inputs = form.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            let hasInteracted = false;
+            
+            // Marcar que el usuario ha interactuado con el campo
+            input.addEventListener('focus', () => {
+                if (!hasInteracted) {
+                    hasInteracted = true;
+                    input.classList.add('field-touched');
+                }
+            });
+            
+            // Para select, también marcar al hacer clic
+            if (input.tagName === 'SELECT') {
+                input.addEventListener('click', () => {
+                    if (!hasInteracted) {
+                        hasInteracted = true;
+                        input.classList.add('field-touched');
+                    }
+                });
+            }
+            
+            // Validar en tiempo real después de la primera interacción
+            input.addEventListener('input', () => {
+                if (hasInteracted) {
+                    if (input.value.trim() !== '' || input.tagName === 'SELECT') {
+                        validateField(input);
+                    } else {
+                        clearError(input);
+                    }
+                }
+                
+                // Update character counter for textarea
+                if (input.name === 'mensaje') {
+                    updateCharacterCounter(input);
+                }
+                
+                // Validate form state for button enabling
+                setTimeout(() => validateFormRealTime(), 100);
+            });
+            
+            // Validar cuando el usuario sale del campo
+            input.addEventListener('blur', () => {
+                if (hasInteracted) {
+                    validateField(input);
+                }
+            });
+            
+            // Para select, validar inmediatamente al cambiar
+            if (input.tagName === 'SELECT') {
+                input.addEventListener('change', () => {
+                    if (!hasInteracted) {
+                        hasInteracted = true;
+                        input.classList.add('field-touched');
+                    }
+                    validateField(input);
+                });
+            }
+        });
+        
         form.addEventListener('submit', function(e) {
             e.preventDefault();
+            
+            // Check honeypot
+            const honeypot = form.querySelector('input[name="website"]');
+            if (honeypot && honeypot.value !== '') {
+                // Bot detected, silently fail
+                console.warn('Bot submission detected');
+                return;
+            }
+            
+            // Validate CSRF token
+            if (!validateCSRFToken()) {
+                showMessage('Token de seguridad inválido. Recarga la página.', 'error');
+                return;
+            }
+            
+            // Disable submit button to prevent double submission
+            const submitBtn = form.querySelector('#submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Enviando...';
             
             // Get form data
             const formData = new FormData(form);
             const data = {
-                nombre: formData.get('nombre'),
-                email: formData.get('email'),
-                telefono: formData.get('telefono'),
-                tipoEvento: formData.get('tipoEvento'),
-                mensaje: formData.get('mensaje')
+                nombre: sanitizeInput(formData.get('nombre')),
+                email: sanitizeInput(formData.get('email')),
+                telefono: sanitizeInput(formData.get('telefono')),
+                tipoEvento: sanitizeInput(formData.get('tipoEvento')),
+                mensaje: sanitizeInput(formData.get('mensaje'))
             };
 
             // Validate form
             if (validateForm(data)) {
-                // Show success message
-                showMessage('¡Gracias por tu consulta! Te contactaremos pronto.', 'success');
-                form.reset();
+                // Simulate form submission (replace with actual endpoint)
+                setTimeout(() => {
+                    showMessage('¡Gracias por tu consulta! Te contactaremos pronto.', 'success');
+                    form.reset();
+                    generateCSRFToken(); // Generate new token
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Enviar Consulta';
+                }, 1000);
             } else {
-                showMessage('Por favor, completa todos los campos correctamente.', 'error');
+                showMessage('Por favor, corrige los errores en el formulario.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Enviar Consulta';
             }
         });
     }
 }
 
-// Form validation
-function validateForm(data) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phoneRegex = /^[\+]?[0-9\s\-\(\)]{9,}$/;
+// Generate CSRF token
+function generateCSRFToken() {
+    const token = 'csrf_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+    const csrfInput = document.getElementById('csrf-token');
+    if (csrfInput) {
+        csrfInput.value = token;
+    }
+    // Store in session storage for validation
+    sessionStorage.setItem('csrf_token', token);
+}
 
-    return (
-        data.nombre.trim().length > 0 &&
-        emailRegex.test(data.email) &&
-        phoneRegex.test(data.telefono) &&
-        data.tipoEvento.trim().length > 0 &&
-        data.mensaje.trim().length > 10
-    );
+// Validate CSRF token
+function validateCSRFToken() {
+    const csrfInput = document.getElementById('csrf-token');
+    const storedToken = sessionStorage.getItem('csrf_token');
+    return csrfInput && csrfInput.value === storedToken;
+}
+
+// Sanitize input to prevent XSS
+function sanitizeInput(input) {
+    if (typeof input !== 'string') return '';
+    return input
+        .trim()
+        .replace(/[<>]/g, '') // Remove < > characters
+        .replace(/javascript:/gi, '') // Remove javascript: protocol
+        .replace(/on\w+=/gi, ''); // Remove event handlers
+}
+
+// Validate individual field con feedback visual mejorado
+function validateField(field) {
+    const value = field.value.trim();
+    const fieldName = field.name;
+    let isValid = true;
+    let errorMessage = '';
+
+    // Si el campo está vacío y es requerido
+    if (value === '' && field.hasAttribute('required')) {
+        isValid = false;
+        errorMessage = getEmptyFieldMessage(fieldName);
+    } else if (value !== '') {
+        // Solo validar formato si hay contenido
+        switch (fieldName) {
+            case 'nombre':
+                if (value.length < 2) {
+                    isValid = false;
+                    errorMessage = 'El nombre debe tener al menos 2 caracteres';
+                } else if (value.length > 50) {
+                    isValid = false;
+                    errorMessage = 'El nombre no puede exceder 50 caracteres';
+                } else if (!/^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]+$/.test(value)) {
+                    isValid = false;
+                    errorMessage = 'El nombre solo puede contener letras y espacios';
+                }
+                break;
+            case 'email':
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                    isValid = false;
+                    errorMessage = 'Ingresa un email válido (ejemplo: usuario@dominio.com)';
+                } else if (value.length > 100) {
+                    isValid = false;
+                    errorMessage = 'El email no puede exceder 100 caracteres';
+                }
+                break;
+            case 'telefono':
+                if (!/^[+]?[0-9\s\-()]{9,20}$/.test(value)) {
+                    isValid = false;
+                    errorMessage = 'Ingresa un teléfono válido (9-20 dígitos)';
+                }
+                break;
+            case 'tipoEvento':
+                if (value === '' || value === null) {
+                    isValid = false;
+                    errorMessage = 'Selecciona un tipo de evento';
+                }
+                break;
+            case 'mensaje':
+                if (value.length < 10) {
+                    isValid = false;
+                    errorMessage = 'El mensaje debe tener al menos 10 caracteres';
+                } else if (value.length > 500) {
+                    isValid = false;
+                    errorMessage = 'El mensaje no puede exceder 500 caracteres';
+                }
+                break;
+        }
+    }
+
+    // Aplicar estilos visuales
+    updateFieldVisualState(field, isValid);
+    showFieldError(field, isValid ? '' : errorMessage);
+    
+    return isValid;
+}
+
+// Obtener mensaje para campos vacíos
+function getEmptyFieldMessage(fieldName) {
+    const messages = {
+        'nombre': 'El nombre es requerido',
+        'email': 'El email es requerido',
+        'telefono': 'El teléfono es requerido',
+        'tipoEvento': 'Selecciona un tipo de evento',
+        'mensaje': 'El mensaje es requerido'
+    };
+    return messages[fieldName] || 'Este campo es requerido';
+}
+
+// Actualizar estado visual del campo
+function updateFieldVisualState(field, isValid) {
+    const hasContent = field.value.trim() !== '';
+    
+    // Remover clases previas
+    field.classList.remove('field-valid', 'field-invalid', 'field-empty');
+    
+    if (!hasContent && field.hasAttribute('required')) {
+        field.classList.add('field-empty');
+    } else if (hasContent) {
+        if (isValid) {
+            field.classList.add('field-valid');
+        } else {
+            field.classList.add('field-invalid');
+        }
+    }
+}
+
+// Show field error
+function showFieldError(field, message) {
+    const errorElement = document.getElementById(field.name + '-error');
+    if (errorElement) {
+        errorElement.textContent = message;
+    }
+}
+
+// Clear field error
+function clearError(field) {
+    const errorElement = document.getElementById(field.name + '-error');
+    if (errorElement) {
+        errorElement.textContent = '';
+    }
+    
+    // Remove visual state classes when clearing, but keep field-touched
+    field.classList.remove('field-valid', 'field-invalid', 'field-empty');
+}
+
+// Initialize character counter
+function initializeCharacterCounter() {
+    const messageField = document.getElementById('mensaje');
+    const counter = document.getElementById('mensaje-counter');
+    
+    if (messageField && counter) {
+        updateCharacterCounter(messageField);
+    }
+}
+
+// Update character counter
+function updateCharacterCounter(textarea) {
+    const counter = document.getElementById('mensaje-counter');
+    if (!counter) return;
+    
+    const currentLength = textarea.value.length;
+    const maxLength = parseInt(textarea.getAttribute('maxlength')) || 500;
+    const remaining = maxLength - currentLength;
+    
+    counter.textContent = `${currentLength}/${maxLength}`;
+    
+    // Update counter styling based on remaining characters
+    counter.classList.remove('warning', 'danger');
+    
+    if (remaining <= 50 && remaining > 20) {
+        counter.classList.add('warning');
+    } else if (remaining <= 20) {
+        counter.classList.add('danger');
+    }
+}
+
+// Enhanced form validation with real-time feedback
+function validateFormRealTime() {
+    const form = document.getElementById('contactForm');
+    if (!form) return false;
+    
+    const fields = ['nombre', 'email', 'telefono', 'tipoEvento', 'mensaje'];
+    let isFormValid = true;
+    
+    fields.forEach(fieldName => {
+        const field = document.querySelector(`[name="${fieldName}"]`);
+        if (field && !validateField(field)) {
+            isFormValid = false;
+        }
+    });
+    
+    // Update submit button state
+    const submitBtn = document.getElementById('submit-btn');
+    if (submitBtn) {
+        if (isFormValid) {
+            submitBtn.classList.remove('btn-disabled');
+            submitBtn.disabled = false;
+        } else {
+            submitBtn.classList.add('btn-disabled');
+        }
+    }
+    
+    return isFormValid;
+}
+
+// Enhanced form validation
+function validateForm(data) {
+    let isValid = true;
+    
+    // Validate each field
+    const fields = ['nombre', 'email', 'telefono', 'tipoEvento', 'mensaje'];
+    fields.forEach(fieldName => {
+        const field = document.querySelector(`[name="${fieldName}"]`);
+        if (field && !validateField(field)) {
+            isValid = false;
+        }
+    });
+    
+    return isValid;
 }
 
 // Show message to user
@@ -443,7 +825,7 @@ function showMessage(message, type) {
 
 // Scroll effects and animations
 function initializeScrollEffects() {
-    // Intersection Observer for animations
+    // Intersection Observer for animations with performance optimization
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
@@ -453,6 +835,8 @@ function initializeScrollEffects() {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('animate-in');
+                // Unobserve after animation to save resources
+                observer.unobserve(entry.target);
             }
         });
     }, observerOptions);
@@ -634,4 +1018,4 @@ function manageFocus() {
 // Initialize focus management
 manageFocus();
 
-console.log('EventRent website initialized successfully!');
+console.log('Iwisheventanddecor website initialized successfully!');

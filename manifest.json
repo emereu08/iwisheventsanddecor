@@ -1,0 +1,27 @@
+{
+  "name": "Iwisheventanddecor - Alquiler de Menaje para Eventos",
+  "short_name": "Iwisheventanddecor",
+  "description": "Alquiler de menaje y productos premium para bodas, cumpleaños, eventos corporativos y celebraciones especiales.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#d4af37",
+  "orientation": "portrait-primary",
+  "categories": ["business", "events", "lifestyle"],
+  "lang": "es",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "img/logo/logo1.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "img/logo/logo2.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}

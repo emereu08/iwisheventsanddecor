@@ -3,10 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EventRent - Event Equipment & Tableware Rental</title>
+    <title>Iwisheventanddecor - Event Equipment & Tableware Rental</title>
+    
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; img-src 'self' data:; script-src 'self'; connect-src 'self' https://wa.me; frame-ancestors 'none';">
+    
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    
+    <!-- DNS Prefetch y Preconnect para mejorar rendimiento -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Preload de imágenes críticas -->
+    <link rel="preload" href="img/logo/logo1.jpeg" as="image">
+    <link rel="preload" href="img/mobiliario/prod1.jpg" as="image">
+    
+    <!-- CSS Critical primero -->
     <link rel="stylesheet" href="styles.css">
+    
+    <!-- Fuentes con display=swap para evitar FOIT -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Font Awesome desde múltiples CDNs para mayor confiabilidad -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" referrerpolicy="no-referrer">
+    <!-- Fallback desde jsDelivr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" crossorigin="anonymous" onerror="this.onerror=null;this.href='icons-fallback.css';">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Meta tags adicionales para SEO y rendimiento -->
+    <meta name="description" content="Premium event equipment and tableware rental for weddings, birthdays, corporate events. Guaranteed quality and exceptional service.">
+    <meta name="keywords" content="event rental, equipment, weddings, birthdays, decoration, furniture">
+    <meta name="author" content="Iwisheventanddecor">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#d4af37">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Iwisheventanddecor - Event Equipment & Tableware Rental">
+    <meta property="og:description" content="Premium event equipment and tableware rental for unique events">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://iwisheventanddecor.com/en">
+    <meta property="og:image" content="img/logo/logo2.jpg">
 </head>
 <body>
     <!-- Language Switcher -->
@@ -21,7 +65,7 @@
         <nav class="navbar">
             <div class="nav-container">
                 <div class="logo">
-                    <img src="img/logo/logo1.jpeg" alt="EventRent" class="logo-img">
+                    <img src="img/logo/logo1.jpeg" alt="Iwisheventanddecor" class="logo-img">
                     <span class="logo-text">I wish events and decor</span>
                 </div>
                 <ul class="nav-menu">
@@ -379,7 +423,7 @@
                         </div>
                         <div class="contact-details">
                             <h3>Email</h3>
-                            <p>info@eventrent.com</p>
+                            <p>info@iwisheventanddecor.com</p>
                         </div>
                     </div>
                     <div class="contact-item">
@@ -402,29 +446,51 @@
                     </div>
                 </div>
                 <div class="contact-form">
-                    <form id="contactForm">
+                    <form id="contactForm" novalidate>
                         <div class="form-group">
-                            <input type="text" id="nombre" name="nombre" placeholder="Your name" required>
+                            <input type="text" id="nombre" name="nombre" placeholder="Your name" required 
+                                   minlength="2" maxlength="50" pattern="[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]+"
+                                   autocomplete="name" spellcheck="false">
+                            <span class="error-message" id="nombre-error"></span>
                         </div>
                         <div class="form-group">
-                            <input type="email" id="email" name="email" placeholder="Your email" required>
+                            <input type="email" id="email" name="email" placeholder="Your email" required 
+                                   maxlength="100" autocomplete="email" spellcheck="false">
+                            <span class="error-message" id="email-error"></span>
                         </div>
                         <div class="form-group">
-                            <input type="tel" id="telefono" name="telefono" placeholder="Your phone" required>
+                            <input type="tel" id="telefono" name="telefono" placeholder="Your phone" required 
+                                   pattern="[+]?[0-9\s\-()]{9,20}" maxlength="20" autocomplete="tel">
+                            <span class="error-message" id="telefono-error"></span>
                         </div>
                         <div class="form-group">
-                            <select id="tipoEvento" name="tipoEvento" required>
+                            <select id="tipoEvento" name="tipoEvento" required autocomplete="off">
                                 <option value="">Event type</option>
                                 <option value="wedding">Wedding</option>
                                 <option value="birthday">Birthday</option>
                                 <option value="corporate">Corporate Event</option>
                                 <option value="other">Other</option>
                             </select>
+                            <span class="error-message" id="tipoEvento-error"></span>
                         </div>
                         <div class="form-group">
-                            <textarea id="mensaje" name="mensaje" placeholder="Tell us about your event" rows="4" required></textarea>
+                            <textarea id="mensaje" name="mensaje" placeholder="Tell us about your event" rows="4" required 
+                                      minlength="10" maxlength="500" spellcheck="true"></textarea>
+                            <div class="textarea-info">
+                                <span class="error-message" id="mensaje-error"></span>
+                                <span class="char-counter" id="mensaje-counter">0/500</span>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Send Inquiry</button>
+                        
+                        <!-- Honeypot para prevenir spam -->
+                        <div class="honeypot" style="display: none;">
+                            <input type="text" name="website" tabindex="-1" autocomplete="off">
+                        </div>
+                        
+                        <!-- Token CSRF (se genera dinámicamente con JavaScript) -->
+                        <input type="hidden" id="csrf-token" name="csrf_token" value="">
+                        
+                        <button type="submit" class="btn btn-primary" id="submit-btn">Send Inquiry</button>
                     </form>
                     
                 </div>
@@ -438,8 +504,8 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <div class="logo">
-                        <img src="img/logo/logo2.jpg" alt="EventRent" class="logo-img">
-                        <span class="logo-text">EventRent</span>
+                        <img src="img/logo/logo2.jpg" alt="Iwisheventanddecor" class="logo-img">
+                        <span class="logo-text">Iwisheventanddecor</span>
                     </div>
                     <p>Your trusted partner for memorable events. Quality, elegance, and exceptional service.</p>
                 </div>
@@ -471,29 +537,29 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 EventRent. All rights reserved.</p>
+                <p>&copy; 2025 Iwisheventanddecor. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
         <!-- Floating Social Buttons -->
     <div class="floating-social">
-        <a href="https://www.instagram.com/iwisheventsanddecor" target="_blank" class="floating-btn instagram" aria-label="Instagram">
+        <a href="https://www.instagram.com/iwisheventsanddecor" target="_blank" rel="noopener noreferrer" class="floating-btn instagram" aria-label="Instagram">
             <i class="fab fa-instagram"></i>
         </a>
-        <a href="https://www.facebook.com/iwisheventsanddecor" target="_blank" class="floating-btn facebook" aria-label="Facebook">
+        <a href="https://www.facebook.com/iwisheventsanddecor" target="_blank" rel="noopener noreferrer" class="floating-btn facebook" aria-label="Facebook">
             <i class="fab fa-facebook-f"></i>
         </a>
     </div>
 
     <!-- WhatsApp Floating Button -->
     <div class="whatsapp-float">
-        <a href="https://wa.me/34123456789?text=Hello!%20I%27m%20interested%20in%20your%20event%20rental%20services.%20Could%20you%20please%20provide%20more%20information?" target="_blank" class="whatsapp-button" aria-label="Contact us on WhatsApp">
+        <a href="https://wa.me/34123456789?text=Hello!%20I%27m%20interested%20in%20your%20event%20rental%20services.%20Could%20you%20please%20provide%20more%20information?" target="_blank" rel="noopener noreferrer" class="whatsapp-button" aria-label="Contact us on WhatsApp">
             <i class="fab fa-whatsapp"></i>
             <span class="whatsapp-text">Contact us</span>
         </a>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
 </body>
 </html>

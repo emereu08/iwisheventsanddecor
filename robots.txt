@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://iwisheventanddecor.com/sitemap.xml
+
+# Disallow sensitive areas
+Disallow: /admin/
+Disallow: /.htaccess
+Disallow: /config/
+Disallow: /logs/
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1
