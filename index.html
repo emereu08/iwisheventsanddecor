@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventRent - Alquiler de Menaje para Eventos</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Language Switcher -->
+    <div class="language-switcher">
+        <a href="index.html" class="lang-btn active">ES</a>
+        <a href="index-en.html" class="lang-btn">EN</a>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <img src="img/logo/logo1.jpeg" alt="EventRent" class="logo-img">
+                    <span class="logo-text">I wish events and decor</span>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#inicio" class="nav-link">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#servicios" class="nav-link">Servicios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#productos" class="nav-link">Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#testimonios" class="nav-link">Testimonios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#contacto" class="nav-link">Contacto</a>
+                    </li>
+                </ul>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Haz de tu evento algo <span class="highlight">extraordinario</span>
+                </h1>
+                <p class="hero-description">
+                    Alquiler de menaje y productos premium para bodas, cumpleaños, eventos corporativos y celebraciones especiales. Calidad garantizada y servicio excepcional.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#productos" class="btn btn-primary">Ver Catálogo</a>
+                    <a href="#contacto" class="btn btn-secondary">Cotizar Evento</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="img/mobiliario/prod1.jpg" alt="Eventos elegantes" class="hero-img">
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="servicios" class="services">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Nuestros Servicios</h2>
+                <p class="section-subtitle">Todo lo que necesitas para tu evento perfecto</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-chair"></i>
+                    </div>
+                    <h3 class="service-title">Mobiliario</h3>
+                    <p class="service-description">Mesas, sillas, manteles y elementos decorativos para ambientar tu celebración.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <h3 class="service-title">Entrega y Recogida</h3>
+                    <p class="service-description">Servicio de entrega puntual y recogida posterior incluido en todos nuestros paquetes.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3 class="service-title">Asesoría Personalizada</h3>
+                    <p class="service-description">Te ayudamos a planificar y elegir los mejores productos para tu tipo de evento.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="productos" class="products">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Nuestros Productos</h2>
+                <p class="section-subtitle">Calidad premium para eventos únicos</p>
+            </div>
+            <div class="product-categories">
+                <button class="filter-btn active" data-filter="all">Todos</button>
+                <button class="filter-btn" data-filter="arcos">Arcos</button>
+                <button class="filter-btn" data-filter="decoracion">Decoración</button>
+                <button class="filter-btn" data-filter="mobiliario">Mobiliario</button>
+            </div>
+            
+            <!-- Carousel Container -->
+            <div class="products-carousel">
+                <button class="carousel-btn carousel-prev">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="products-wrapper">
+                    <div class="products-grid">
+                        <!-- Arcos -->
+                        <div class="product-card" data-category="arcos">
+                            <img src="img/arcos/prod2.jpg" alt="Arco ceremonial clásico con columnas" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-title">Arco Ceremonial Clásico</h3>
+                                <p class="product-description">Arco de estilo clásico con columnas decorativas, perfecto para ceremonias de boda y eventos formales</p>
+                            </div>
+                        </div>
+                        <div class="product-card" data-category="arcos">
+                            <img src="img/arcos/prod3.jpg" alt="Arco floral con decoración natural" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-title">Arco Floral Natural</h3>
+                                <p class="product-description">Estructura elegante diseñada para decoración floral abundante, ideal para bodas en jardín</p>
+                            </div>
+                        </div>
+                        <div class="product-card" data-category="arcos">
+                            <img src="img/arcos/prod5.jpg" alt="Arco moderno minimalista" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-title">Arco Moderno Minimalista</h3>
+                                <p class="product-description">Diseño contemporáneo y elegante, adaptable a diferentes estilos decorativos y temáticas</p>
+                            </div>
+                        </div>
+                        <div class="product-card" data-category="arcos">
+                            <img src="img/arcos/prod14.jpg" alt="Arco premium con acabados dorados" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-title">Arco Premium Luxury</h3>
+                                <p class="product-description">Arco de lujo con acabados especiales y detalles ornamentales para eventos exclusivos</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Decoración -->
+                        <div class="product-card" data-category="decoracion">
+                            <img src="img/decoracion/prod4.jpg" alt="Centro de mesa con velas y flores" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-title">Centros de Mesa Románticos</h3>
+                                <p class="product-description">Elegantes arreglos con velas, cristalería fina y flores naturales para crear ambiente íntimo</p>
+                            </div>
+                        </div>
+                        <div class="product-card" data-category="decoracion">
+                            <img src="img/decoracion/prod8.jpg" alt="Decoración con elementos dorados" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-title">Decoración Dorada Luxury</h3>
+                                <p class="product-description">Elementos decorativos con acabados dorados y detalles brillantes para eventos de gala</p>
+                            </div>
+                        </div>
+                        <div class="product-card" data-category="decoracion">
+                            <img src="img/decoracion/prod10.jpg" alt="Arreglos florales elegantes" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-title">Arreglos Florales Premium</h3>
+                                <p class="product-description">Composiciones florales sofisticadas con flores frescas de temporada y follaje exótico</p>
+                            </div>
+                        </div>
+                        <div class="product-card" data-category="decoracion">
+                            <img src="img/decoracion/prod11.jpg" alt="Decoración temática personalizada" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-title">Decoración Temática Custom</h3>
+                                <p class="product-description">Ambientación personalizada según tu visión, con elementos únicos y diseño exclusivo</p>
+                            </div>
+                        </div>
+                        <div class="product-card" data-category="decoracion">
+                            <img src="img/decoracion/prod12.jpg" alt="Estilo vintage con detalles rústicos" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-title">Decoración Vintage & Rústica</h3>
+                                <p class="product-description">Elementos con encanto vintage, maderas naturales y texturas rústicas para eventos campestres</p>
+                            </div>
+                        </div>
+                        <div class="product-card" data-category="decoracion">
+                            <img src="img/decoracion/prod13.jpg" alt="Diseño moderno y minimalista" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-title">Decoración Moderna Clean</h3>
+                                <p class="product-description">Líneas limpias y diseño contemporáneo con paleta de colores neutros y formas geométricas</p>
+                            </div>
+                        </div>
+                        <div class="product-card" data-category="decoracion">
+                            <img src="img/decoracion/prod15.jpg" alt="Ambientación romántica con luces" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-title">Iluminación Romántica</h3>
+                                <p class="product-description">Sistemas de iluminación suave con luces cálidas, velas y elementos lumínicos especiales</p>
+                            </div>
+                        </div>
+                        <div class="product-card" data-category="decoracion">
+                            <img src="img/decoracion/prod18.jpg" alt="Decoración colorida y festiva" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-title">Decoración Festiva Colorida</h3>
+                                <p class="product-description">Elementos vibrantes y alegres con colores intensos, perfectos para celebraciones animadas</p>
+                            </div>
+                        </div>
+                        <div class="product-card" data-category="decoracion">
+                            <img src="img/decoracion/prod19.jpg" alt="Decoración exclusiva de diseñador" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-title">Colección Diseñador</h3>
+                                <p class="product-description">Piezas únicas de diseñadores reconocidos, elementos exclusivos para eventos distinguidos</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Mobiliario -->
+                        <div class="product-card" data-category="mobiliario">
+                            <img src="img/mobiliario/prod1.jpg" alt="Mesa principal rectangular elegante" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-title">Mesa Principal Rectangular</h3>
+                                <p class="product-description">Mesa de honor rectangular para 12-14 personas, acabado elegante para presidir tu evento</p>
+                            </div>
+                        </div>
+                        <div class="product-card" data-category="mobiliario">
+                            <img src="img/mobiliario/prod6.jpg" alt="Conjunto de mesas redondas premium" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-title">Mesas Redondas Premium</h3>
+                                <p class="product-description">Mesas redondas de 1.60m con mantelería incluida, capacidad para 8-10 comensales</p>
+                            </div>
+                        </div>
+                        <div class="product-card" data-category="mobiliario">
+                            <img src="img/mobiliario/prod7.jpg" alt="Sillas chiavari doradas" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-title">Sillas Chiavari Gold</h3>
+                                <p class="product-description">Sillas estilo Chiavari con acabado dorado, cojines elegantes y máximo confort</p>
+                            </div>
+                        </div>
+                        <div class="product-card" data-category="mobiliario">
+                            <img src="img/mobiliario/prod9.jpg" alt="Mobiliario de lounge VIP" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-title">Mobiliario Lounge VIP</h3>
+                                <p class="product-description">Sofás, sillones y mesas de centro tapizados en cuero para áreas VIP y cocktails</p>
+                            </div>
+                        </div>
+                        <div class="product-card" data-category="mobiliario">
+                            <img src="img/mobiliario/prod16.jpg" alt="Sillas cross back vintage" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-title">Sillas Cross Back Vintage</h3>
+                                <p class="product-description">Sillas de madera con respaldo cruzado, estilo rústico-chic con cojines en lino</p>
+                            </div>
+                        </div>
+                        <div class="product-card" data-category="mobiliario">
+                            <img src="img/mobiliario/prod17.jpg" alt="Mobiliario clásico de madera" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-title">Colección Clásica Madera</h3>
+                                <p class="product-description">Mesas y sillas de madera maciza con diseño tradicional y acabados naturales</p>
+                            </div>
+                        </div>
+                        <div class="product-card" data-category="mobiliario">
+                            <img src="img/mobiliario/prod20.jpg" alt="Mobiliario moderno acrílico" class="product-image">
+                            <div class="product-info">
+                                <h3 class="product-title">Mobiliario Moderno Acrílico</h3>
+                                <p class="product-description">Mesas y sillas transparentes de acrílico para eventos contemporáneos y minimalistas</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-btn carousel-next">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            
+            <!-- Carousel Indicators -->
+            <div class="carousel-indicators">
+                <span class="indicator active" data-slide="0"></span>
+                <span class="indicator" data-slide="1"></span>
+                <span class="indicator" data-slide="2"></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <div class="modal-body">
+                <div class="modal-image">
+                    <img id="modalImage" src="" alt="">
+                </div>
+                <div class="modal-info">
+                    <h2 id="modalTitle"></h2>
+                    <p id="modalDescription"></p>
+                    <div class="modal-features">
+                        <h3>Características:</h3>
+                        <ul id="modalFeatures"></ul>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn btn-primary">Cotizar Producto</button>
+                        <button class="btn btn-secondary">Más Información</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Testimonials Section -->
+    <section id="testimonios" class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Lo que dicen nuestros clientes</h2>
+                <p class="section-subtitle">Testimonios reales de eventos exitosos</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"El servicio fue excepcional. Todo llegó a tiempo y en perfectas condiciones. Nuestro evento fue un éxito total."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-info">
+                            <h4>María González</h4>
+                            <span>Boda en Jardín</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"La calidad del menaje superó nuestras expectativas. Definitivamente los recomendamos para eventos corporativos."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-info">
+                            <h4>Carlos Ruiz</h4>
+                            <span>Evento Corporativo</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"Atención personalizada y productos hermosos. Hicieron que el cumpleaños de mi hija fuera mágico."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-info">
+                            <h4>Ana Martínez</h4>
+                            <span>Fiesta de Cumpleaños</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contacto" class="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Contacta con nosotros</h2>
+                <p class="section-subtitle">Estamos aquí para hacer tu evento perfecto</p>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Teléfono</h3>
+                            <p>+34 123 456 789</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Email</h3>
+                            <p>info@eventrent.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Dirección</h3>
+                            <p>Calle Principal 123, Ciudad</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Horario</h3>
+                            <p>Lun - Vie: 9:00 - 18:00</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="email" name="email" placeholder="Tu email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" id="telefono" name="telefono" placeholder="Tu teléfono" required>
+                        </div>
+                        <div class="form-group">
+                            <select id="tipoEvento" name="tipoEvento" required>
+                                <option value="">Tipo de evento</option>
+                                <option value="boda">Boda</option>
+                                <option value="cumpleanos">Cumpleaños</option>
+                                <option value="corporativo">Evento Corporativo</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="mensaje" name="mensaje" placeholder="Cuéntanos sobre tu evento" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Enviar Consulta</button>
+                    </form>
+                
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="logo">
+                        <img src="img/logo/logo2.jpg" alt="EventRent" class="logo-img">
+                        <span class="logo-text">EventRent</span>
+                    </div>
+                    <p>Tu socio de confianza para eventos memorables. Calidad, elegancia y servicio excepcional.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Servicios</h3>
+                    <ul>
+                        <li><a href="#">Alquiler de Vajilla</a></li>
+                        <li><a href="#">Mobiliario para Eventos</a></li>
+                        <li><a href="#">Decoración</a></li>
+                        <li><a href="#">Entrega y Montaje</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Eventos</h3>
+                    <ul>
+                        <li><a href="#">Bodas</a></li>
+                        <li><a href="#">Cumpleaños</a></li>
+                        <li><a href="#">Eventos Corporativos</a></li>
+                        <li><a href="#">Celebraciones</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contacto</h3>
+                    <div class="footer-contact">
+                        <p><i class="fas fa-phone"></i> +34 123 456 789</p>
+                        <p><i class="fas fa-envelope"></i> info@eventrent.com</p>
+                        <p><i class="fas fa-map-marker-alt"></i> Calle Principal 123</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EventRent. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Social Buttons -->
+    <div class="floating-social">
+        <a href="https://www.instagram.com/iwisheventsanddecor" target="_blank" class="floating-btn instagram" aria-label="Instagram">
+            <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://www.facebook.com/iwisheventsanddecor" target="_blank" class="floating-btn facebook" aria-label="Facebook">
+            <i class="fab fa-facebook-f"></i>
+        </a>
+    </div>
+
+    <!-- WhatsApp Floating Button -->
+    <div class="whatsapp-float">
+        <a href="https://wa.me/34123456789?text=¡Hola!%20Estoy%20interesado%20en%20sus%20servicios%20de%20alquiler%20para%20eventos.%20¿Podrían%20proporcionarme%20más%20información?" target="_blank" class="whatsapp-button" aria-label="Contáctanos por WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+            <span class="whatsapp-text">Contáctanos</span>
+        </a>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
