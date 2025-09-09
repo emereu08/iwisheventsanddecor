@@ -257,6 +257,12 @@ body {
     color: var(--primary-color);
 }
 
+/* Footer logo text specific styling */
+.footer .logo-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
 .nav-menu {
     display: flex;
     list-style: none;
