@@ -172,42 +172,91 @@ function initializeProductCarousel() {
     const filterButtons = document.querySelectorAll('.filter-btn');
     const productCards = document.querySelectorAll('.product-card');
 
+    if (!carousel || !prevBtn || !nextBtn) {
+        console.warn('Carousel elements not found');
+        return;
+    }
+
     let currentIndex = 0;
     let visibleCards = getVisibleCards();
     let filteredCards = [...productCards];
-    let maxIndex = Math.max(0, filteredCards.length - visibleCards);
+    
+    // Calculate initial maxIndex correctly
+    let maxIndex = filteredCards.length <= visibleCards ? 0 : filteredCards.length - visibleCards;
+
+    // Initialize carousel position
+    updateCarousel();
+
+    // Re-initialize after a short delay to ensure proper calculations
+    setTimeout(() => {
+        visibleCards = getVisibleCards();
+        maxIndex = filteredCards.length <= visibleCards ? 0 : filteredCards.length - visibleCards;
+        currentIndex = Math.min(currentIndex, maxIndex);
+        updateCarousel();
+    }, 100);
 
     // Get number of visible cards based on screen size
     function getVisibleCards() {
-        if (window.innerWidth >= 1200) return 4;
-        if (window.innerWidth >= 768) return 3;
-        if (window.innerWidth >= 480) return 2;
-        return 1;
+        const containerWidth = document.querySelector('.products-carousel').clientWidth;
+        const cardWidth = 320;
+        const gap = 32;
+        const containerPadding = 72; // 2rem left + 2.5rem right
+        
+        // Calculate available width for cards
+        const availableWidth = containerWidth - containerPadding;
+        
+        // Calculate how many cards fit completely
+        const possibleCards = Math.floor((availableWidth + gap) / (cardWidth + gap));
+        
+        // Fallback to breakpoint-based calculation if needed
+        const breakpointBased = window.innerWidth >= 1200 ? 4 :
+                               window.innerWidth >= 768 ? 3 :
+                               window.innerWidth >= 480 ? 2 : 1;
+        
+        // Use the smaller value to ensure cards fit properly
+        return Math.min(possibleCards, breakpointBased);
     }
 
     // Update carousel position
     function updateCarousel() {
-        const cardWidth = 320 + 32; // card width + gap (updated to match CSS)
-        const translateX = -(currentIndex * cardWidth);
+        const cardWidth = 320; // card width
+        const gap = 32; // gap between cards (2rem)
+        
+        // Ensure currentIndex doesn't exceed the maximum allowed
+        currentIndex = Math.min(currentIndex, maxIndex);
+        currentIndex = Math.max(currentIndex, 0);
+        
+        // Calculate the exact position considering gaps only
+        // The CSS padding handles the container spacing
+        const translateX = -(currentIndex * (cardWidth + gap));
         carousel.style.transform = `translateX(${translateX}px)`;
         
         // Update navigation button states
         prevBtn.style.opacity = currentIndex === 0 ? '0.5' : '1';
         nextBtn.style.opacity = currentIndex >= maxIndex ? '0.5' : '1';
+        prevBtn.style.pointerEvents = currentIndex === 0 ? 'none' : 'auto';
+        nextBtn.style.pointerEvents = currentIndex >= maxIndex ? 'none' : 'auto';
         
-        // Update indicators (show progress)
-        const totalSlides = Math.max(1, maxIndex + 1);
-        const progress = maxIndex > 0 ? currentIndex / maxIndex : 0;
-        indicators.forEach((indicator, index) => {
-            if (index < 3) { // Keep maximum 3 indicators
-                const segmentSize = 1 / 3;
-                const isActive = progress >= (index * segmentSize) && progress < ((index + 1) * segmentSize);
-                indicator.classList.toggle('active', isActive || (index === 2 && progress >= 0.67));
-                indicator.style.display = 'block';
-            } else {
-                indicator.style.display = 'none';
-            }
-        });
+        // Update indicators (show progress) - only if there are slides to navigate
+        if (maxIndex > 0) {
+            const progress = currentIndex / maxIndex;
+            indicators.forEach((indicator, index) => {
+                if (index < 3) {
+                    const segmentSize = 1 / 3;
+                    const isActive = progress >= (index * segmentSize) && progress < ((index + 1) * segmentSize);
+                    indicator.classList.toggle('active', isActive || (index === 2 && progress >= 0.67));
+                    indicator.style.display = 'block';
+                } else {
+                    indicator.style.display = 'none';
+                }
+            });
+        } else {
+            // No navigation needed, show only first indicator
+            indicators.forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === 0);
+                indicator.style.display = index < 3 ? 'block' : 'none';
+            });
+        }
     }
 
     // Filter products by category
@@ -224,7 +273,16 @@ function initializeProductCarousel() {
         
         // Reset carousel position
         currentIndex = 0;
-        maxIndex = Math.max(0, filteredCards.length - visibleCards);
+        
+        // Calculate maxIndex correctly to prevent last item from being cut off
+        // If we have fewer or equal cards than visible cards, no scrolling needed
+        if (filteredCards.length <= visibleCards) {
+            maxIndex = 0;
+        } else {
+            // Calculate how many positions we can scroll while keeping all visible cards fully visible
+            maxIndex = filteredCards.length - visibleCards;
+        }
+        
         updateCarousel();
     }
 
@@ -246,8 +304,8 @@ function initializeProductCarousel() {
     // Indicator navigation - divide carousel into 3 segments
     indicators.forEach((indicator, index) => {
         indicator.addEventListener('click', () => {
-            if (index < 3) {
-                const segmentSize = Math.floor(maxIndex / 3);
+            if (index < 3 && maxIndex > 0) {
+                const segmentSize = Math.max(1, Math.floor(maxIndex / 3));
                 currentIndex = Math.min(index * segmentSize, maxIndex);
                 updateCarousel();
             }
@@ -269,12 +327,14 @@ function initializeProductCarousel() {
 
     // Auto-slide (optional) - move one image at a time
     let autoSlide = setInterval(() => {
-        if (currentIndex < maxIndex) {
-            currentIndex++;
-        } else {
-            currentIndex = 0;
+        if (maxIndex > 0) {
+            if (currentIndex < maxIndex) {
+                currentIndex++;
+            } else {
+                currentIndex = 0;
+            }
+            updateCarousel();
         }
-        updateCarousel();
     }, 4000); // Slightly faster since we're moving one at a time
 
     // Pause auto-slide on hover
@@ -282,12 +342,14 @@ function initializeProductCarousel() {
     carouselContainer.addEventListener('mouseenter', () => clearInterval(autoSlide));
     carouselContainer.addEventListener('mouseleave', () => {
         autoSlide = setInterval(() => {
-            if (currentIndex < maxIndex) {
-                currentIndex++;
-            } else {
-                currentIndex = 0;
+            if (maxIndex > 0) {
+                if (currentIndex < maxIndex) {
+                    currentIndex++;
+                } else {
+                    currentIndex = 0;
+                }
+                updateCarousel();
             }
-            updateCarousel();
         }, 4000);
     });
 
@@ -296,7 +358,8 @@ function initializeProductCarousel() {
         const newVisibleCards = getVisibleCards();
         if (newVisibleCards !== visibleCards) {
             visibleCards = newVisibleCards;
-            maxIndex = Math.max(0, filteredCards.length - visibleCards);
+            // Recalculate maxIndex with improved logic
+            maxIndex = filteredCards.length <= visibleCards ? 0 : filteredCards.length - visibleCards;
             currentIndex = Math.min(currentIndex, maxIndex);
             updateCarousel();
         }
@@ -1019,3 +1082,345 @@ function manageFocus() {
 manageFocus();
 
 console.log('Iwisheventanddecor website initialized successfully!');
+
+// Events Gallery Functionality - New Slideshow Version
+function initializeEventsGallery() {
+    const slides = document.querySelectorAll('.event-slide');
+    const prevBtn = document.querySelector('.events-prev');
+    const nextBtn = document.querySelector('.events-next');
+    const playPauseBtn = document.querySelector('.events-play-pause-btn');
+    const indicators = document.querySelectorAll('.event-indicator');
+    const eventsContactBtn = document.querySelector('.events-contact-btn');
+    
+    if (!slides.length) return;
+
+    let currentSlide = 0;
+    let isTransitioning = false;
+    let autoSlideInterval;
+    let isPlaying = true;
+
+    // Detect language from page
+    const isEnglish = document.documentElement.lang === 'en';
+    
+    // Testimonials data for each event type (bilingual support)
+    const testimonialsES = {
+        0: { text: '"El baby shower de mi hija fue perfecto! Cada detalle estaba cuidado con amor."', name: 'María González', event: 'Baby Shower' },
+        1: { text: '"La celebración de cumpleaños superó todas nuestras expectativas. ¡Increíble trabajo!"', name: 'Carlos Rodríguez', event: 'Cumpleaños' },
+        2: { text: '"El primer añito de mi bebé fue un sueño hecho realidad. Gracias por tanto cariño."', name: 'Ana López', event: 'Primer Añito' },
+        3: { text: '"La fiesta de mi pequeña fue mágica. Los niños se divirtieron muchísimo."', name: 'Patricia Martínez', event: 'Cumpleaños Infantil' },
+        4: { text: '"Nuestra reunión familiar fue especial gracias a su atención a los detalles."', name: 'Roberto Silva', event: 'Evento Social' },
+        5: { text: '"La organización fue impecable. Cada momento fue capturado con profesionalismo."', name: 'Laura Fernández', event: 'Celebración Especial' },
+        6: { text: '"No podríamos haber pedido un evento mejor. Todo estuvo perfecto."', name: 'Miguel Torres', event: 'Evento Temático' },
+        7: { text: '"La creatividad y dedicación se notó en cada rincón del evento. ¡Excepcional!"', name: 'Carmen Díaz', event: 'Evento Corporativo' },
+        8: { text: '"Superaron nuestras expectativas. Un evento inolvidable para toda la familia."', name: 'José Herrera', event: 'Reunión Familiar' }
+    };
+    
+    const testimonialsEN = {
+        0: { text: '"My daughter\'s baby shower was perfect! Every detail was handled with love."', name: 'Maria Gonzalez', event: 'Baby Shower' },
+        1: { text: '"The birthday celebration exceeded all our expectations. Incredible work!"', name: 'Carlos Rodriguez', event: 'Birthday' },
+        2: { text: '"My baby\'s first year was a dream come true. Thank you for so much care."', name: 'Ana Lopez', event: 'First Birthday' },
+        3: { text: '"My little girl\'s party was magical. The children had so much fun."', name: 'Patricia Martinez', event: 'Children\'s Birthday' },
+        4: { text: '"Our family gathering was special thanks to their attention to detail."', name: 'Roberto Silva', event: 'Social Event' },
+        5: { text: '"The organization was impeccable. Every moment was captured with professionalism."', name: 'Laura Fernandez', event: 'Special Celebration' },
+        6: { text: '"We couldn\'t have asked for a better event. Everything was perfect."', name: 'Miguel Torres', event: 'Themed Event' },
+        7: { text: '"The creativity and dedication showed in every corner of the event. Exceptional!"', name: 'Carmen Diaz', event: 'Corporate Event' },
+        8: { text: '"They exceeded our expectations. An unforgettable event for the whole family."', name: 'Jose Herrera', event: 'Family Gathering' }
+    };
+    
+    const testimonials = isEnglish ? testimonialsEN : testimonialsES;
+
+    // Initialize slideshow
+    function initSlideshow() {
+        slides.forEach((slide, index) => {
+            slide.classList.remove('active', 'prev', 'next');
+            if (index === currentSlide) {
+                slide.classList.add('active');
+            }
+        });
+        
+        updateIndicators();
+        updateTestimonial();
+        updateNavButtons();
+        updatePlayPauseButton();
+    }
+
+    // Update slide with smooth transition
+    function updateSlide(newIndex) {
+        if (isTransitioning || newIndex === currentSlide) return;
+        
+        isTransitioning = true;
+        
+        const prevSlide = slides[currentSlide];
+        const newSlide = slides[newIndex];
+        
+        // Remove active class from current slide
+        prevSlide.classList.remove('active');
+        
+        // Determine transition direction
+        const isNext = newIndex > currentSlide || (currentSlide === slides.length - 1 && newIndex === 0);
+        
+        // Add transition classes
+        if (isNext) {
+            prevSlide.classList.add('prev');
+            newSlide.classList.add('next');
+        } else {
+            prevSlide.classList.add('next');
+            newSlide.classList.add('prev');
+        }
+        
+        // Activate new slide after a brief delay
+        setTimeout(() => {
+            newSlide.classList.remove('prev', 'next');
+            newSlide.classList.add('active');
+            
+            // Clean up previous slide
+            setTimeout(() => {
+                prevSlide.classList.remove('prev', 'next');
+                isTransitioning = false;
+            }, 100);
+        }, 50);
+        
+        currentSlide = newIndex;
+        updateIndicators();
+        updateTestimonial();
+        updateNavButtons();
+    }
+
+    // Update indicators
+    function updateIndicators() {
+        indicators.forEach((indicator, index) => {
+            indicator.classList.toggle('active', index === currentSlide);
+        });
+    }
+
+    // Update testimonial content
+    function updateTestimonial() {
+        const testimonial = testimonials[currentSlide];
+        if (testimonial) {
+            const testimonialText = document.getElementById('current-testimonial');
+            const testimonialName = document.getElementById('testimonial-name');
+            const testimonialEvent = document.getElementById('testimonial-event');
+            
+            if (testimonialText) {
+                testimonialText.style.opacity = '0';
+                testimonialName.style.opacity = '0';
+                testimonialEvent.style.opacity = '0';
+                
+                setTimeout(() => {
+                    testimonialText.textContent = testimonial.text;
+                    testimonialName.textContent = testimonial.name;
+                    testimonialEvent.textContent = testimonial.event;
+                    
+                    testimonialText.style.opacity = '1';
+                    testimonialName.style.opacity = '1';
+                    testimonialEvent.style.opacity = '1';
+                }, 300);
+            }
+        }
+    }
+
+    // Update navigation buttons
+    function updateNavButtons() {
+        if (prevBtn && nextBtn) {
+            // Enable all buttons (circular navigation)
+            prevBtn.disabled = false;
+            nextBtn.disabled = false;
+        }
+    }
+
+    // Update play/pause button appearance
+    function updatePlayPauseButton() {
+        if (playPauseBtn) {
+            const icon = playPauseBtn.querySelector('i');
+            if (icon) {
+                icon.className = isPlaying ? 'fas fa-pause' : 'fas fa-play';
+            }
+        }
+    }
+
+    // Auto-slide functionality
+    function startAutoSlide() {
+        if (!isPlaying) return;
+        
+        autoSlideInterval = setInterval(() => {
+            if (isPlaying) {
+                const nextIndex = (currentSlide + 1) % slides.length;
+                updateSlide(nextIndex);
+            }
+        }, 5000); // Change every 5 seconds as requested
+    }
+
+    function stopAutoSlide() {
+        if (autoSlideInterval) {
+            clearInterval(autoSlideInterval);
+            autoSlideInterval = null;
+        }
+    }
+
+    function restartAutoSlide() {
+        stopAutoSlide();
+        if (isPlaying) {
+            setTimeout(startAutoSlide, 2000); // Restart after 2 seconds
+        }
+    }
+
+    function togglePlayPause() {
+        isPlaying = !isPlaying;
+        updatePlayPauseButton();
+        
+        if (isPlaying) {
+            startAutoSlide();
+        } else {
+            stopAutoSlide();
+        }
+    }
+
+    // Navigation event listeners
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            const prevIndex = currentSlide === 0 ? slides.length - 1 : currentSlide - 1;
+            updateSlide(prevIndex);
+            restartAutoSlide();
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            const nextIndex = (currentSlide + 1) % slides.length;
+            updateSlide(nextIndex);
+            restartAutoSlide();
+        });
+    }
+
+    // Play/pause button event listener
+    if (playPauseBtn) {
+        playPauseBtn.addEventListener('click', togglePlayPause);
+    }
+
+    // Indicator event listeners
+    indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', () => {
+            updateSlide(index);
+            restartAutoSlide();
+        });
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+            const prevIndex = currentSlide === 0 ? slides.length - 1 : currentSlide - 1;
+            updateSlide(prevIndex);
+            restartAutoSlide();
+        } else if (e.key === 'ArrowRight') {
+            const nextIndex = (currentSlide + 1) % slides.length;
+            updateSlide(nextIndex);
+            restartAutoSlide();
+        } else if (e.key === ' ') { // Space bar for play/pause
+            e.preventDefault();
+            togglePlayPause();
+        }
+    });
+
+    // Touch/swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const slideshow = document.querySelector('.events-slideshow');
+
+    if (slideshow) {
+        slideshow.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        slideshow.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+            restartAutoSlide();
+        }, { passive: true });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    // Swipe left - next slide
+                    const nextIndex = (currentSlide + 1) % slides.length;
+                    updateSlide(nextIndex);
+                } else {
+                    // Swipe right - previous slide
+                    const prevIndex = currentSlide === 0 ? slides.length - 1 : currentSlide - 1;
+                    updateSlide(prevIndex);
+                }
+            }
+        }
+
+        // Pause auto-slide on hover (optional behavior)
+        slideshow.addEventListener('mouseenter', () => {
+            if (isPlaying) {
+                stopAutoSlide();
+            }
+        });
+        
+        slideshow.addEventListener('mouseleave', () => {
+            if (isPlaying) {
+                setTimeout(startAutoSlide, 1000);
+            }
+        });
+    }
+
+    // Contact button functionality
+    if (eventsContactBtn) {
+        eventsContactBtn.addEventListener('click', () => {
+            const contactSection = document.querySelector('#contacto');
+            if (contactSection) {
+                contactSection.scrollIntoView({ behavior: 'smooth' });
+                
+                setTimeout(() => {
+                    const nameInput = document.querySelector('#nombre');
+                    if (nameInput) {
+                        nameInput.focus();
+                    }
+                }, 1000);
+            }
+        });
+    }
+
+    // Intersection Observer for performance
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && isPlaying) {
+                startAutoSlide();
+            } else {
+                stopAutoSlide();
+            }
+        });
+    }, {
+        threshold: 0.5
+    });
+
+    const eventsSection = document.querySelector('.events-showcase');
+    if (eventsSection) {
+        observer.observe(eventsSection);
+    }
+
+    // Initialize
+    initSlideshow();
+    
+    // Add smooth transitions to testimonial elements
+    const testimonialElements = [
+        document.getElementById('current-testimonial'),
+        document.getElementById('testimonial-name'),
+        document.getElementById('testimonial-event')
+    ];
+    
+    testimonialElements.forEach(element => {
+        if (element) {
+            element.style.transition = 'opacity 0.3s ease';
+        }
+    });
+}
+
+// Initialize events gallery when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(initializeEventsGallery, 500); // Small delay to ensure other scripts are loaded
+});
